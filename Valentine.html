@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine 🌹❤️</title>
+
+    <style>
+        /* Base styling */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #ff1e56, #ff4b2b, #ff6f91, #ff8fab);
+            background-size: 300% 300%;
+            animation: bgMove 6s ease infinite;
+            overflow: hidden;
+            text-align: center;
+            color: white;
+        }
+
+        @keyframes bgMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(255, 0, 80, 0.6);
+            position: relative;
+            z-index: 2;
+            max-width: 90%;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+        }
+
+        h2 {
+            margin: 0.5rem 0 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 15px;
+            transition: 0.3s;
+        }
+
+        .yes {
+            background: #fff;
+            color: #ff1e56;
+            font-weight: bold;
+        }
+
+        .yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px white;
+        }
+
+        .no {
+            background: #900c3f;
+            color: white;
+            position: absolute;
+            touch-action: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Floating roses */
+        .rose {
+            position: absolute;
+            font-size: 20px;
+            animation: float 8s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+            }
+        }
+
+        /* Dancing emojis */
+        .emoji {
+            position: absolute;
+            font-size: 25px;
+            animation: dance 5s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes dance {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(50vh) rotate(180deg);
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+            }
+        }
+
+        /* Typing animation */
+        #typingIntro {
+            font-size: 1.2rem;
+            border-right: 3px solid white;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 4s steps(40, end), blink 0.75s step-end infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        /* Confetti canvas */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1rem;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Bollywood romantic song -->
+    <audio id="music" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mp3">
+    </audio>
+
+
+    <!-- Typing Intro -->
+    <div class="box" id="typingBox">
+        <div id="typingIntro">Hey… I have something super important to ask you… 💌</div>
+    </div>
+
+    <!-- Question -->
+    <div class="box hidden" id="questionBox">
+        <h1>🌹 Hey Beautiful 🌹</h1>
+        <h2>Will you be my Valentine? ❤️</h2>
+        <button class="btn yes" onclick="sayYes()">YESSS 💘</button>
+        <button class="btn no" id="noBtn">No 🙈</button>
+    </div>
+
+    <!-- Success -->
+    <div class="box hidden" id="successBox">
+        <h1>🌹 Right Decision! 💖 You made my day! 🌹</h1>
+        <h2>
+            You unlocked:<br><br>
+            💖 Unlimited Love<br>
+            🍫 Free Chocolates<br>
+            🎬 Cute Movie Nights<br>
+            🌹 Daily Red Roses<br>
+            💃 Dancing Together Forever<br><br>
+            Currently I'm in Saudi, but when I come to India, we'll enjoy all of this together ❤️
+        </h2>
+
+    </div>
+
+    <canvas id="confetti"></canvas>
+
+    <script>
+        // Typing intro -> show question
+        setTimeout(() => {
+            document.getElementById("typingBox").classList.add("hidden");
+            document.getElementById("questionBox").classList.remove("hidden");
+        }, 4000);
+
+        // Confetti
+        const canvas = document.getElementById("confetti");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let pieces = [];
+
+        function startConfetti() {
+            for (let i = 0; i < 200; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 8 + 4,
+                    speed: Math.random() * 3 + 2,
+                    color: `hsl(${Math.random() * 360}, 100%, 60%)`
+                });
+            }
+            document.getElementById("music").play();
+            requestAnimationFrame(updateConfetti);
+        }
+
+        function updateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieces.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+                p.y += p.speed;
+                if (p.y > canvas.height) p.y = 0;
+            });
+            requestAnimationFrame(updateConfetti);
+        }
+
+        // Yes button
+        function sayYes() {
+            document.getElementById("questionBox").classList.add("hidden");
+            document.getElementById("successBox").classList.remove("hidden");
+            startConfetti();
+        }
+
+        // Floating roses
+        for (let i = 0; i < 20; i++) {
+            const rose = document.createElement("div");
+            rose.classList.add("rose");
+            rose.innerHTML = "🌹";
+            rose.style.left = Math.random() * 100 + "vw";
+            rose.style.animationDuration = (5 + Math.random() * 5) + "s";
+            rose.style.fontSize = (20 + Math.random() * 25) + "px";
+            document.body.appendChild(rose);
+        }
+
+        // Dancing emojis
+        const danceEmojis = ["💃", "🕺", "😂", "🥰", "🤪"];
+        for (let i = 0; i < 15; i++) {
+            const emoji = document.createElement("div");
+            emoji.classList.add("emoji");
+            emoji.innerHTML = danceEmojis[Math.floor(Math.random() * danceEmojis.length)];
+            emoji.style.left = Math.random() * 100 + "vw";
+            emoji.style.animationDuration = (3 + Math.random() * 5) + "s";
+            emoji.style.fontSize = (20 + Math.random() * 30) + "px";
+            document.body.appendChild(emoji);
+        }
+
+        // No button runs away (never disappears)
+        const noBtn = document.getElementById("noBtn");
+
+        function moveNo() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
+        }
+
+        // Mouse hover or touch triggers running
+        noBtn.addEventListener("mouseenter", moveNo);
+        noBtn.addEventListener("touchstart", moveNo);
+    </script>
+
+</body>
+
+</html>
