@@ -281,16 +281,14 @@
 <script>
     (function() {
         // ==================== CONFIGURATION ====================
-        // Change this value to adjust prank duration (in seconds)
-        const BLOCK_DURATION = 90; // ← CHANGE THIS: 60, 90, 120, etc.
+        const BLOCK_DURATION = 90; // Change this for different duration (seconds)
         
         let blockActive = true;
         let fakeCallVisible = false;
         let notificationInterval;
         let vibrationInterval;
-        let audioCtx = null;
         
-        // Terminal messages - Customize these!
+        // Terminal messages
         const terminalMessages = [
             "> ⚠ SYSTEM BREACH DETECTED ⚠",
             "> Establishing encrypted backdoor connection...",
@@ -312,67 +310,6 @@
             "> 🕵️ Cloning social media sessions...",
             "> 📤 Preparing data exfiltration..."
         ];
-        
-        // Sound effects
-        function playSound(type) {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            audioCtx.resume().catch(e => console.log('Audio blocked'));
-            
-            const now = audioCtx.currentTime;
-            const oscillator = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            oscillator.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            switch(type) {
-                case 'alert':
-                    oscillator.frequency.value = 880;
-                    gain.gain.value = 0.4;
-                    oscillator.start();
-                    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
-                    oscillator.stop(now + 0.5);
-                    break;
-                case 'breach':
-                    oscillator.frequency.value = 440;
-                    gain.gain.value = 0.5;
-                    oscillator.start();
-                    setTimeout(() => {
-                        oscillator.frequency.value = 880;
-                    }, 150);
-                    setTimeout(() => {
-                        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.8);
-                        oscillator.stop(now + 0.8);
-                    }, 300);
-                    break;
-                case 'camera':
-                    oscillator.frequency.value = 1200;
-                    gain.gain.value = 0.3;
-                    oscillator.start();
-                    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
-                    oscillator.stop(now + 0.2);
-                    break;
-                case 'warning':
-                    oscillator.frequency.value = 600;
-                    gain.gain.value = 0.35;
-                    oscillator.start();
-                    setTimeout(() => {
-                        oscillator.frequency.value = 300;
-                    }, 200);
-                    setTimeout(() => {
-                        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.6);
-                        oscillator.stop(now + 0.6);
-                    }, 400);
-                    break;
-                default:
-                    oscillator.frequency.value = 600;
-                    gain.gain.value = 0.2;
-                    oscillator.start();
-                    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
-                    oscillator.stop(now + 0.3);
-            }
-        }
         
         // Add line to terminal
         const terminalDiv = document.getElementById('terminal');
@@ -409,7 +346,6 @@
                 </div>
             `;
             document.body.appendChild(selfieDiv);
-            playSound('camera');
             
             // Flash effect
             const flash = document.createElement('div');
@@ -482,11 +418,9 @@
                 callDiv.remove();
                 fakeCallVisible = false;
                 addLine("> Call rejected. Traceback initiated...");
-                playSound('warning');
             });
             document.getElementById('acceptCall')?.addEventListener('click', () => {
                 callDiv.innerHTML = `<div style="font-weight:bold;">📞 CONNECTED</div><div style="margin-top:10px">"Your device has been compromised. Do not attempt to disconnect."</div>`;
-                playSound('breach');
                 setTimeout(() => {
                     callDiv.remove();
                     fakeCallVisible = false;
@@ -585,11 +519,6 @@
             // Block navigation
             blockNavigation();
             
-            // Initialize audio on first user interaction
-            document.body.addEventListener('click', () => {
-                if (audioCtx) audioCtx.resume();
-            }, { once: true });
-            
             // Type terminal messages
             await typeMessages(terminalMessages, 40);
             
@@ -599,58 +528,49 @@
             camInd.innerHTML = '📷 CAMERA ACTIVE';
             document.body.appendChild(camInd);
             
-            // Play breach sound
-            setTimeout(() => playSound('breach'), 500);
-            
-            // Location notification
+            // Location notification (immediate)
             setTimeout(() => {
                 const locNotif = document.createElement('div');
                 locNotif.className = 'notification';
                 locNotif.innerHTML = `<div style="font-weight:bold;">📍 LOCATION ACCESS</div><div>Lat: ${(Math.random() * 180 - 90).toFixed(4)}°, Lon: ${(Math.random() * 360 - 180).toFixed(4)}°</div><div style="font-size:10px;">Accuracy: 3 meters</div>`;
                 document.body.appendChild(locNotif);
                 setTimeout(() => locNotif.remove(), 4500);
-                playSound('alert');
-            }, 1200);
+            }, 1500);
             
             // Start random notifications
             notificationInterval = setInterval(() => {
                 if (blockActive) showRandomNotification();
-            }, 3000);
+            }, 3200);
             
             // Show spinner
-            setTimeout(() => showSpinner(), 2000);
+            setTimeout(() => showSpinner(), 2500);
             
             // Start data transfer bar
-            setTimeout(() => startDataTransferBar(), 3800);
+            setTimeout(() => startDataTransferBar(), 4000);
             
             // Fake call
-            setTimeout(() => showFakeCall(), 5500);
+            setTimeout(() => showFakeCall(), 6000);
             
-            // Selfie overlays
-            setTimeout(() => showSelfieOverlay(), 7000);
-            setTimeout(() => showSelfieOverlay(), 14000);
-            setTimeout(() => showSelfieOverlay(), 22000);
+            // Selfie overlays (multiple times)
+            setTimeout(() => showSelfieOverlay(), 7500);
+            setTimeout(() => showSelfieOverlay(), 15000);
+            setTimeout(() => showSelfieOverlay(), 23000);
             
             // Vibrations
             vibrationInterval = setInterval(() => {
                 if (blockActive) vibrateDevice();
-            }, 4500);
-            
-            // Additional sounds
-            setTimeout(() => playSound('warning'), 2500);
-            setTimeout(() => playSound('camera'), 8000);
-            setTimeout(() => playSound('breach'), 12000);
+            }, 5000);
             
             // Extra terminal messages during prank
             setTimeout(() => {
                 addLine("> 🕵️ Establishing persistent remote access...");
                 addLine("> 🔑 Extracting browser saved passwords...");
-            }, 9000);
+            }, 9500);
             
             setTimeout(() => {
                 addLine("> 📱 Accessing WhatsApp database...");
                 addLine("> 📸 Capturing ambient camera frames...");
-            }, 16000);
+            }, 17000);
             
             // Countdown lock
             const countdownDiv = document.createElement('div');
@@ -684,7 +604,7 @@
                     addLine("> ✅ No data was actually compromised");
                     addLine("> 😂 Just a simulation! 😂");
                     
-                    // Exit button (only appears at the very end)
+                    // Exit button
                     const exitBtn = document.createElement('button');
                     exitBtn.className = 'exit-btn';
                     exitBtn.innerHTML = '✓ EXIT ✓';
@@ -693,7 +613,7 @@
                     };
                     document.body.appendChild(exitBtn);
                     
-                    // Also remove all active overlays
+                    // Remove all overlays
                     const overlays = document.querySelectorAll('.selfie-overlay, .fake-call, .spinner-overlay, .data-transfer-bar');
                     overlays.forEach(el => el.remove());
                 }
@@ -704,7 +624,7 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 startPrank();
-            }, 100);
+            }, 200);
         });
     })();
 </script>
